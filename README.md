@@ -1,2 +1,19 @@
-# gloss-glow-booking-platform
-Full Stack Booking &amp; Management Platform for Gloss &amp; Glow Car Detailing Studio
+# Gloss & Glow Booking Platform
+
+Full Stack Booking and Management Platform for Gloss & Glow Car Detailing Studio.
+
+## Tech Stack
+
+- React
+- Tailwind CSS
+- Flask
+- SQLite
+- Twilio
+
+## Features
+
+- Customer Booking System
+- Admin Dashboard
+- Service Management
+- Gallery Management
+- SMS Notifications

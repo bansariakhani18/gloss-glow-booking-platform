@@ -187,3 +187,116 @@ def update_appointment_status(appointment_id):
     return jsonify({
         "message": "Appointment status updated"
     })
+
+@main.route("/api/admin/services", methods=["GET"])
+def get_all_services():
+    conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM services
+        ORDER BY id DESC
+    """)
+
+    services = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+
+    return jsonify(services)
+
+@main.route("/api/admin/services", methods=["POST"])
+def create_service():
+    data = request.json
+
+    conn = sqlite3.connect(DATABASE_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO services (
+            name,
+            description,
+            price,
+            duration
+        )
+        VALUES (?, ?, ?, ?)
+    """, (
+        data["name"],
+        data.get("description"),
+        data.get("price"),
+        data.get("duration")
+    ))
+
+    conn.commit()
+
+    service_id = cursor.lastrowid
+
+    conn.close()
+
+    return jsonify({
+        "message": "Service created successfully",
+        "service_id": service_id
+    }), 201
+
+@main.route("/api/admin/services/<int:service_id>", methods=["PUT"])
+def update_service(service_id):
+    data = request.json
+
+    conn = sqlite3.connect(DATABASE_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE services
+        SET
+            name = ?,
+            description = ?,
+            price = ?,
+            duration = ?
+        WHERE id = ?
+    """, (
+        data["name"],
+        data.get("description"),
+        data.get("price"),
+        data.get("duration"),
+        service_id
+    ))
+
+    conn.commit()
+
+    if cursor.rowcount == 0:
+        conn.close()
+
+        return jsonify({
+            "message": "Service not found"
+        }), 404
+
+    conn.close()
+
+    return jsonify({
+        "message": "Service updated successfully"
+    })
+@main.route("/api/admin/services/<int:service_id>", methods=["DELETE"])
+def delete_service(service_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM services
+        WHERE id = ?
+    """, (service_id,))
+
+    conn.commit()
+
+    if cursor.rowcount == 0:
+        conn.close()
+
+        return jsonify({
+            "message": "Service not found"
+        }), 404
+
+    conn.close()
+
+    return jsonify({
+        "message": "Service deleted successfully"
+    })

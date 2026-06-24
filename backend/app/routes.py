@@ -43,6 +43,7 @@ def get_slots():
 
     return jsonify(slots)
 
+
 @main.route("/api/gallery", methods=["GET"])
 def get_gallery():
     conn = sqlite3.connect(DATABASE_NAME)
@@ -61,12 +62,48 @@ def get_gallery():
 
     return jsonify(images)
 
+
 @main.route("/api/appointments", methods=["POST"])
 def create_appointment():
     data = request.json
 
     conn = sqlite3.connect(DATABASE_NAME)
     cursor = conn.cursor()
+
+    # Check slot capacity
+    cursor.execute("""
+        SELECT max_capacity
+        FROM slot_settings
+        WHERE slot_time = ?
+    """, (data["preferred_time"],))
+
+    slot = cursor.fetchone()
+
+    if not slot:
+        conn.close()
+        return jsonify({
+            "message": "Invalid time slot"
+        }), 400
+
+    max_capacity = slot[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM appointments
+        WHERE preferred_date = ?
+        AND preferred_time = ?
+    """, (
+        data["preferred_date"],
+        data["preferred_time"]
+    ))
+
+    current_bookings = cursor.fetchone()[0]
+
+    if current_bookings >= max_capacity:
+        conn.close()
+        return jsonify({
+            "message": "Selected slot is full"
+        }), 400
 
     cursor.execute("""
         INSERT INTO appointments (

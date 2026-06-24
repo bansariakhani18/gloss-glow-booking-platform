@@ -6,7 +6,62 @@ main = Blueprint("main", __name__)
 DATABASE_NAME = "gloss_glow.db"
 
 
-@main.route("/appointments", methods=["POST"])
+@main.route("/api/services", methods=["GET"])
+def get_services():
+    conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM services
+        WHERE is_active = 1
+    """)
+
+    services = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+
+    return jsonify(services)
+
+
+@main.route("/api/slots", methods=["GET"])
+def get_slots():
+    conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM slot_settings
+        ORDER BY slot_time
+    """)
+
+    slots = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+
+    return jsonify(slots)
+
+@main.route("/api/gallery", methods=["GET"])
+def get_gallery():
+    conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM gallery_images
+        ORDER BY uploaded_at DESC
+    """)
+
+    images = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+
+    return jsonify(images)
+
+@main.route("/api/appointments", methods=["POST"])
 def create_appointment():
     data = request.json
 

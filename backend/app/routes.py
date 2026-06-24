@@ -136,3 +136,54 @@ def create_appointment():
     return jsonify({
         "message": "Appointment booked successfully"
     }), 201
+
+
+@main.route("/api/admin/appointments", methods=["GET"])
+def get_all_appointments():
+    conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM appointments
+        ORDER BY created_at DESC
+    """)
+
+    appointments = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+
+    return jsonify(appointments)
+
+
+@main.route("/api/admin/appointments/<int:appointment_id>", methods=["PUT"])
+def update_appointment_status(appointment_id):
+    data = request.json
+
+    conn = sqlite3.connect(DATABASE_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE appointments
+        SET status = ?
+        WHERE id = ?
+    """, (
+        data["status"],
+        appointment_id
+    ))
+
+    conn.commit()
+
+    if cursor.rowcount == 0:
+        conn.close()
+
+        return jsonify({
+            "message": "Appointment not found"
+        }), 404
+
+    conn.close()
+
+    return jsonify({
+        "message": "Appointment status updated"
+    })

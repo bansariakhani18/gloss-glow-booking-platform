@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from werkzeug.security import check_password_hash
 import sqlite3
 
 main = Blueprint("main", __name__)
@@ -70,7 +71,6 @@ def create_appointment():
     conn = sqlite3.connect(DATABASE_NAME)
     cursor = conn.cursor()
 
-    # Check slot capacity
     cursor.execute("""
         SELECT max_capacity
         FROM slot_settings
@@ -138,6 +138,99 @@ def create_appointment():
     }), 201
 
 
+@main.route("/api/auth/login", methods=["POST"])
+def login():
+    data = request.json
+
+    conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM admins
+        WHERE username = ?
+    """, (data["username"],))
+
+    admin = cursor.fetchone()
+
+    conn.close()
+
+    if not admin:
+        return jsonify({
+            "message": "Invalid username or password"
+        }), 401
+
+    if not check_password_hash(
+        admin["password_hash"],
+        data["password"]
+    ):
+        return jsonify({
+            "message": "Invalid username or password"
+        }), 401
+
+    return jsonify({
+        "message": "Login successful",
+        "admin_id": admin["id"],
+        "username": admin["username"]
+    })
+
+
+@main.route("/api/admin/dashboard", methods=["GET"])
+def dashboard_stats():
+    conn = sqlite3.connect(DATABASE_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM appointments")
+    total_appointments = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM appointments
+        WHERE status = 'Pending'
+    """)
+    pending = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM appointments
+        WHERE status = 'Confirmed'
+    """)
+    confirmed = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM appointments
+        WHERE status = 'Completed'
+    """)
+    completed = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM appointments
+        WHERE status = 'Cancelled'
+    """)
+    cancelled = cursor.fetchone()[0]
+
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM services
+        WHERE is_active = 1
+    """)
+    total_services = cursor.fetchone()[0]
+
+    conn.close()
+
+    return jsonify({
+        "total_appointments": total_appointments,
+        "pending": pending,
+        "confirmed": confirmed,
+        "completed": completed,
+        "cancelled": cancelled,
+        "total_services": total_services
+    })
+
+
 @main.route("/api/admin/appointments", methods=["GET"])
 def get_all_appointments():
     conn = sqlite3.connect(DATABASE_NAME)
@@ -186,117 +279,4 @@ def update_appointment_status(appointment_id):
 
     return jsonify({
         "message": "Appointment status updated"
-    })
-
-@main.route("/api/admin/services", methods=["GET"])
-def get_all_services():
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT *
-        FROM services
-        ORDER BY id DESC
-    """)
-
-    services = [dict(row) for row in cursor.fetchall()]
-
-    conn.close()
-
-    return jsonify(services)
-
-@main.route("/api/admin/services", methods=["POST"])
-def create_service():
-    data = request.json
-
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        INSERT INTO services (
-            name,
-            description,
-            price,
-            duration
-        )
-        VALUES (?, ?, ?, ?)
-    """, (
-        data["name"],
-        data.get("description"),
-        data.get("price"),
-        data.get("duration")
-    ))
-
-    conn.commit()
-
-    service_id = cursor.lastrowid
-
-    conn.close()
-
-    return jsonify({
-        "message": "Service created successfully",
-        "service_id": service_id
-    }), 201
-
-@main.route("/api/admin/services/<int:service_id>", methods=["PUT"])
-def update_service(service_id):
-    data = request.json
-
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        UPDATE services
-        SET
-            name = ?,
-            description = ?,
-            price = ?,
-            duration = ?
-        WHERE id = ?
-    """, (
-        data["name"],
-        data.get("description"),
-        data.get("price"),
-        data.get("duration"),
-        service_id
-    ))
-
-    conn.commit()
-
-    if cursor.rowcount == 0:
-        conn.close()
-
-        return jsonify({
-            "message": "Service not found"
-        }), 404
-
-    conn.close()
-
-    return jsonify({
-        "message": "Service updated successfully"
-    })
-@main.route("/api/admin/services/<int:service_id>", methods=["DELETE"])
-def delete_service(service_id):
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        DELETE FROM services
-        WHERE id = ?
-    """, (service_id,))
-
-    conn.commit()
-
-    if cursor.rowcount == 0:
-        conn.close()
-
-        return jsonify({
-            "message": "Service not found"
-        }), 404
-
-    conn.close()
-
-    return jsonify({
-        "message": "Service deleted successfully"
     })

@@ -1,5 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
+import logo from "../../assets/logo/logo.png";
 
 export default function Navbar() {
 
@@ -7,9 +8,9 @@ export default function Navbar() {
 
     useEffect(() => {
 
-        function handleScroll() {
-            setScrolled(window.scrollY > 40);
-        }
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 30);
+        };
 
         window.addEventListener("scroll", handleScroll);
 
@@ -18,33 +19,58 @@ export default function Navbar() {
     }, []);
 
     const linkStyle = ({ isActive }) =>
-    `relative transition-all duration-300 after:absolute after:left-0 after:-bottom-2 after:h-[2px] after:bg-red-600 after:transition-all after:duration-300 ${
-        isActive
-            ? "text-red-500 after:w-full"
-            : "text-zinc-300 hover:text-white after:w-0 hover:after:w-full"
-    }`;
+        `relative uppercase tracking-[3px] text-sm font-medium transition-all duration-300
+        after:absolute after:left-0 after:-bottom-2 after:h-[2px]
+        after:bg-red-600 after:transition-all after:duration-300
+        ${
+            isActive
+                ? "text-white after:w-full"
+                : "text-zinc-400 hover:text-white after:w-0 hover:after:w-full"
+        }`;
 
     return (
 
         <header
-           className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ${
-            scrolled
-        ? "bg-black/65 backdrop-blur-2xl border-b border-white/10 shadow-[0_0_40px_rgba(255,0,0,0.08)]"
-        : "bg-transparent"
-                            }`}
+            className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+                scrolled
+                    ? "bg-black/75 backdrop-blur-2xl border-b border-white/10"
+                    : "bg-transparent"
+            }`}
         >
 
-            <div className="max-w-7xl mx-auto flex items-center justify-between px-8 py-5">
+            <div className="max-w-[1450px] mx-auto flex items-center justify-between px-8 py-4">
 
                 <Link
                     to="/"
-                    className="text-3xl font-black tracking-wide hover:scale-105 transition duration-300"
+                    className="flex items-center gap-4 group"
                 >
-                    <span className="text-white">GLOSS</span>
-                    <span className="text-red-600"> & GLOW</span>
+
+                    <img
+                        src={logo}
+                        alt="Gloss & Glow"
+                        className="w-16 h-16 object-contain transition duration-300 group-hover:scale-105"
+                    />
+
+                    <div>
+
+                        <h2 className="text-white font-black text-3xl leading-none">
+
+                            GLOSS
+                            <span className="text-red-600"> & GLOW</span>
+
+                        </h2>
+
+                        <p className="text-zinc-500 text-xs uppercase tracking-[4px] mt-2">
+
+                            Premium Auto Detailing Studio
+
+                        </p>
+
+                    </div>
+
                 </Link>
 
-                <nav className="hidden md:flex gap-10 text-sm uppercase tracking-[3px]">
+                <nav className="hidden lg:flex items-center gap-12">
 
                     <NavLink to="/" className={linkStyle}>
                         Home
@@ -58,17 +84,23 @@ export default function Navbar() {
                         Gallery
                     </NavLink>
 
-                    <NavLink to="/booking" className={linkStyle}>
-                        Booking
-                    </NavLink>
-
                 </nav>
 
                 <Link
-                    to="/login"
-                    className="bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full text-white font-semibold"
+                    to="/booking?online=true"
+                    className="hidden lg:flex items-center justify-center
+                    border border-red-600
+                    text-white
+                    px-8 py-3
+                    rounded-full
+                    font-semibold
+                    transition-all duration-300
+                    hover:bg-red-600
+                    hover:shadow-[0_0_25px_rgba(220,38,38,0.4)]"
                 >
-                    Admin
+
+                    Book Now
+
                 </Link>
 
             </div>

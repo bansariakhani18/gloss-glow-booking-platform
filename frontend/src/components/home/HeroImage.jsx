@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
-import heroCar from "../../assets/images/hero-car.png";
-
+import heroCar from "../../assets/hero/hero-car.png";
 export default function HeroImage() {
 
     return (

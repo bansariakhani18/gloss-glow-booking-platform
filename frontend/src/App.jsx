@@ -1,21 +1,29 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
+
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Gallery from "./pages/Gallery";
 import Booking from "./pages/Booking";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Appointments from "./pages/Appointments";
-import ManageServices from "./pages/ManageServices";
 
-export default function App() {
+import AdminLogin from "./pages/admin/Login";
+import Dashboard from "./pages/admin/Dashboard";
+import Appointments from "./pages/admin/Appointments";
+import ManageServices from "./pages/admin/ManageServices";
+
+function Layout() {
+
+    const location = useLocation();
+
+    const isAdmin = location.pathname.startsWith("/admin");
+
     return (
-        <BrowserRouter>
 
-            <Navbar />
+        <>
+
+            {!isAdmin && <Navbar />}
 
             <Routes>
 
@@ -27,24 +35,46 @@ export default function App() {
 
                 <Route path="/booking" element={<Booking />} />
 
-                <Route path="/login" element={<Login />} />
-
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route
+                    path="/admin"
+                    element={<AdminLogin />}
+                />
 
                 <Route
-                    path="/appointments"
+                    path="/admin/dashboard"
+                    element={<Dashboard />}
+                />
+
+                <Route
+                    path="/admin/appointments"
                     element={<Appointments />}
                 />
 
                 <Route
-                    path="/manage-services"
+                    path="/admin/manage-services"
                     element={<ManageServices />}
                 />
 
             </Routes>
 
-            <Footer />
+            {!isAdmin && <Footer />}
+
+        </>
+
+    );
+
+}
+
+export default function App() {
+
+    return (
+
+        <BrowserRouter>
+
+            <Layout />
 
         </BrowserRouter>
+
     );
+
 }

@@ -1,35 +1,118 @@
-import GalleryPreview from "../components/home/GalleryPreview";
+import gallery1 from "../assets/gallery/gallery1.jpeg";
+import gallery2 from "../assets/gallery/gallery2.jpeg";
+import gallery3 from "../assets/gallery/gallery3.jpeg";
+import gallery4 from "../assets/gallery/gallery4.jpeg";
+import gallery5 from "../assets/gallery/gallery5.jpeg";
+import video from "../assets/gallery/gallery6.mp4";
+
 
 export default function Gallery() {
+
     return (
-        <div className="bg-[#050505] min-h-screen">
 
-            <section className="py-24 border-b border-white/10">
+        <main className="bg-[#080808] text-white">
 
-                <div className="max-w-7xl mx-auto px-8 text-center">
+            <section className="pt-36 pb-24">
 
-                    <p className="uppercase tracking-[8px] text-red-500 mb-4">
-                        Gallery
+                <div className="max-w-7xl mx-auto px-8">
+
+                    <p className="uppercase tracking-[6px] text-red-600 mb-5">
+
+                        OUR WORK
+
                     </p>
 
-                    <h1 className="text-6xl font-black text-white">
-                        Real Cars.
-                        <br />
+                    <h1 className="text-5xl lg:text-7xl font-black leading-tight">
+
                         Real Transformations.
+
+                        <br />
+
+                        Real Results.
+
                     </h1>
 
-                    <p className="text-zinc-400 text-xl mt-8 max-w-3xl mx-auto leading-9">
-                        Every vehicle receives premium attention using
-                        professional detailing products and techniques.
-                        Here's a glimpse of our recent work.
+                    <p className="text-zinc-400 mt-8 text-lg max-w-2xl leading-8">
+
+                        Every vehicle that enters our studio receives the same
+                        attention to detail, premium products and professional
+                        craftsmanship.
+
                     </p>
 
                 </div>
 
             </section>
 
-            <GalleryPreview />
+            <section className="pb-32">
+
+    <div className="max-w-6xl mx-auto px-8">
+
+        <div className="mb-24">
+
+            <p className="uppercase tracking-[6px] text-red-600 mb-3">
+                Our Recent Work
+            </p>
+
+            <h2 className="text-5xl font-black">
+                Craftsmanship in Every Detail
+            </h2>
 
         </div>
+
+        {/* Large */}
+
+        <img
+            src={gallery1}
+            alt=""
+            className="w-full h-[620px] object-cover rounded-[40px] hover:scale-[1.01] transition duration-700"
+        />
+
+        {/* Two Images */}
+
+        <div className="grid md:grid-cols-2 gap-10 my-20">
+
+            
+             <img
+                src={gallery5}
+                alt=""
+                className="w-[70%] h-[420px] object-cover rounded-[40px] hover:scale-[1.02] transition duration-700"
+            />
+            
+        <img
+            src={gallery4}
+            alt=""
+            className="w-full h-[420px] object-cover rounded-[40px] hover:scale-[1.01] transition duration-700"
+        />
+            
+
+        </div>
+
+        {/* Large */}
+
+         <img
+                src={gallery2}
+                alt=""
+                className="h-[500px] w-full object-cover rounded-[36px] hover:scale-[1.02] transition duration-700"
+            />
+
+        {/* Last Image */}
+
+        <div className="flex justify-center mt-20">
+
+            <img
+                src={gallery3}
+                alt=""
+                className="h-[500px] w-full object-cover rounded-[36px] hover:scale-[1.02] transition duration-700"
+            />
+
+        </div>
+
+    </div>
+
+</section>
+        </main>
+
     );
+
 }

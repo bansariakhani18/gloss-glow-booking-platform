@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import api from "../../api/api";
+import { Link } from "react-router-dom";
 import { motion } from "motion/react";
+import api from "../../api/api";
+
+import basicWash from "../../assets/services/standard-wash.jpg";
+import interiorCleaning from "../../assets/services/interior-cleaning.jpg";
+import detailing from "../../assets/services/detailing.jpg";
+import ceramic from "../../assets/services/ceramic-coating.jpg";
 
 export default function ServicesPreview() {
 
@@ -33,62 +39,139 @@ export default function ServicesPreview() {
 
     }, []);
 
+    const serviceImages = {
+        "Basic Wash": basicWash,
+        "Interior Cleaning": interiorCleaning,
+        "Full Detailing": detailing,
+        "Ceramic Coating": ceramic,
+    };
+
     return (
 
-        <section className="bg-[#0b0b0b] py-28">
+        <section className="bg-[#050505] py-28">
 
             <div className="max-w-7xl mx-auto px-8">
 
-                <p className="uppercase tracking-[6px] text-red-500 mb-3">
-                    Premium Services
-                </p>
+                <motion.div
 
-                <h2 className="text-5xl font-black text-white mb-14">
-                    What We Offer
-                </h2>
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+
+                    className="text-center mb-20"
+
+                >
+
+                    <p className="uppercase tracking-[8px] text-red-600 text-sm mb-4">
+
+                        Our Premium Services
+
+                    </p>
+
+                    <h2 className="text-5xl lg:text-6xl font-black text-white">
+
+                        Luxury Care For Every Vehicle
+
+                    </h2>
+
+                    <p className="text-zinc-400 text-lg mt-6 max-w-2xl mx-auto">
+
+                        Professional detailing services using premium products
+                        and modern equipment to restore, protect and enhance
+                        your vehicle.
+
+                    </p>
+
+                </motion.div>
 
                 {loading ? (
 
-                    <p className="text-zinc-500">
-                        Loading services...
-                    </p>
+                    <div className="text-center text-zinc-500">
+
+                        Loading Services...
+
+                    </div>
 
                 ) : (
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid lg:grid-cols-2 gap-10">
 
                         {services.map((service) => (
 
                             <motion.div
+
                                 key={service.id}
+
+                                initial={{ opacity: 0, y: 40 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+
                                 whileHover={{
-                                    y: -10,
-                                    scale: 1.03
+                                    y: -8
                                 }}
-                                className="rounded-3xl border border-white/10 bg-zinc-900 p-8 transition"
+
+                                className="group overflow-hidden rounded-3xl bg-[#111111] border border-white/10 hover:border-red-600 transition-all duration-500"
+
                             >
 
-                                <h3 className="text-2xl font-bold text-white">
-                                    {service.name}
-                                </h3>
+                                <div className="overflow-hidden h-72">
 
-                                <p className="text-zinc-400 mt-4 h-20">
-                                    {service.description}
-                                </p>
+                                    <img
 
-                                <div className="mt-6 flex justify-between items-center">
+                                        src={serviceImages[service.name]}
+                                        alt={service.name}
 
-                                    <span className="text-red-500 font-bold text-xl">
+                                        className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
 
-                                        ₹{service.price}
+                                    />
 
-                                    </span>
+                                </div>
 
-                                    <span className="text-zinc-500">
+                                <div className="p-8">
 
-                                        {service.duration}
+                                    <div className="flex justify-between items-center mb-5">
 
-                                    </span>
+                                        <h3 className="text-3xl font-bold text-white">
+
+                                            {service.name}
+
+                                        </h3>
+
+                                        <span className="text-red-500 text-2xl font-black">
+
+                                            ₹{service.price}
+
+                                        </span>
+
+                                    </div>
+
+                                    <p className="text-zinc-400 leading-8 mb-8">
+
+                                        {service.description}
+
+                                    </p>
+
+                                    <div className="flex items-center justify-between">
+
+                                        <span className="text-zinc-500">
+
+                                            ⏱ {service.duration}
+
+                                        </span>
+
+                                        <Link
+
+                                            to="/booking"
+
+                                            className="bg-red-600 hover:bg-red-700 transition px-6 py-3 rounded-full text-white font-semibold"
+
+                                        >
+
+                                            Book Now
+
+                                        </Link>
+
+                                    </div>
 
                                 </div>
 

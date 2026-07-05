@@ -7,21 +7,21 @@ export default function HeroContent() {
 
         <motion.div
 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9 }}
 
-            animate={{ opacity: 1, y: 0 }}
-
-            transition={{ duration: 0.8 }}
+            className="max-w-2xl"
 
         >
 
-            <p className="uppercase tracking-[7px] text-red-500 mb-2">
+            <p className="uppercase tracking-[8px] text-red-600 text-sm font-semibold mb-6">
 
-                PREMIUM CAR DETAILING
+                SCIENCE CITY • AHMEDABAD
 
             </p>
 
-            <h1 className="text-7xl xl:text-8xl font-black leading-none">
+            <h1 className="text-6xl lg:text-7xl font-black leading-[0.9] text-white">
 
                 GLOSS
 
@@ -35,21 +35,39 @@ export default function HeroContent() {
 
             </h1>
 
-            <p className="mt-4 text-zinc-400 text-xl leading-8 max-w-lg">
+            <h2 className="mt-10 text-4xl lg:text-5xl font-bold leading-tight text-white">
 
-                Luxury detailing that restores shine,
-                protects paint and makes every drive
-                feel brand new.
+                Making Your Car
+
+                <br />
+
+                Look Brand New.
+
+                <br />
+
+                <span className="text-red-600">
+
+                    Every Day.
+
+                </span>
+
+            </h2>
+
+            <p className="mt-8 text-zinc-400 text-lg leading-9 max-w-xl">
+
+                Premium ceramic coating, paint protection,
+                detailing and deep interior care delivered with
+                professional precision for every vehicle.
 
             </p>
 
-            <div className="flex gap-5 mt-7">
+            <div className="mt-14 flex flex-wrap gap-6">
 
                 <Link
 
                     to="/booking"
 
-                    className="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-full transition font-semibold"
+                    className="bg-red-600 hover:bg-red-700 transition-all duration-300 px-8 py-4 rounded-full text-white font-semibold shadow-lg hover:shadow-red-600/30"
 
                 >
 
@@ -61,7 +79,7 @@ export default function HeroContent() {
 
                     to="/services"
 
-                    className="border border-white/20 hover:bg-white hover:text-black transition px-8 py-4 rounded-full"
+                    className="border border-zinc-700 hover:border-red-600 hover:text-white transition-all duration-300 px-8 py-4 rounded-full text-zinc-300 font-semibold"
 
                 >
 

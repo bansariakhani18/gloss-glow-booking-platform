@@ -1,15 +1,17 @@
 import Hero from "../components/home/Hero";
-import Stats from "../components/home/Stats";
 import ServicesPreview from "../components/home/ServicesPreview";
-import GalleryPreview from "../components/home/GalleryPreview";
+import BrandStatement from "../components/home/BrandStatement";
+import WhyChooseUs from "../components/home/WhyChooseUs";
+import BookingCTA from "../components/home/BookingCTA";
 
 export default function Home() {
     return (
         <>
             <Hero />
-            <Stats />
             <ServicesPreview />
-            <GalleryPreview />
+            <BrandStatement />
+            <WhyChooseUs />
+            <BookingCTA />
         </>
     );
 }

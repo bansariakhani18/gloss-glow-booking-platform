@@ -9,6 +9,13 @@ import detailing from "../../assets/services/detailing.jpg";
 import ceramic from "../../assets/services/ceramic-coating.jpg";
 
 export default function ServicesPreview() {
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }, []);
+
 
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -96,7 +103,11 @@ export default function ServicesPreview() {
 
                     <div className="grid lg:grid-cols-2 gap-10">
 
-                        {services.map((service) => (
+                        {services
+    .filter(service =>
+        serviceImages[service.name]
+    )
+    .map((service) => (
 
                             <motion.div
 
@@ -184,6 +195,16 @@ export default function ServicesPreview() {
                 )}
 
             </div>
+            <div className="text-center mt-16">
+
+    <Link
+        to="/services"
+        className="inline-flex items-center gap-3 bg-red-600 hover:bg-red-700 transition px-8 py-4 rounded-full text-white font-semibold text-lg"
+    >
+        View All Services →
+    </Link>
+
+</div> {/* end max-w-7xl */}
 
         </section>
 

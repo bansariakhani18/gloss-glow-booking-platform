@@ -1,3 +1,4 @@
+import re
 from flask import Blueprint, request, jsonify, session
 from werkzeug.security import check_password_hash
 import sqlite3
@@ -9,7 +10,7 @@ def admin_required():
     if "admin_id" not in session:
         return jsonify({
             "message": "Authentication required"
-        }), 401
+        }), 401  
 
     return None
 
@@ -89,13 +90,63 @@ def get_gallery():
     return jsonify(images)
 
 
+
 @main.route("/api/appointments", methods=["POST"])
 def create_appointment():
+
     data = request.json
 
+    required = [
+        "customer_name",
+        "customer_phone",
+        "vehicle_model",
+        "service_type",
+        "preferred_date",
+        "preferred_time"
+    ]
+
+    for field in required:
+
+        if not data.get(field) or not str(data[field]).strip():
+
+            return jsonify({
+                "message": f"{field.replace('_', ' ').title()} is required"
+            }), 400
+
+    name = data["customer_name"].strip()
+    
+    if not re.fullmatch(r"[A-Za-z .'-]+", name):
+
+     return jsonify({
+            "message": "Name contains invalid characters"
+        }), 400
+    if len(name) > 100:
+
+        return jsonify({
+            "message": "Name is too long"
+        }), 400
+
+    phone = data["customer_phone"].strip()
+
+    if not re.fullmatch(r"\d{10}", phone):
+
+        return jsonify({
+            "message": "Phone number must contain exactly 10 digits"
+        }), 400
+
+    vehicle = data["vehicle_model"].strip()
+
+    if len(vehicle) > 80:
+
+        return jsonify({
+            "message": "Vehicle name is too long"
+        }), 400
+
     conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
+    # Check slot capacity
     cursor.execute("""
         SELECT max_capacity
         FROM slot_settings
@@ -105,12 +156,14 @@ def create_appointment():
     slot = cursor.fetchone()
 
     if not slot:
+
         conn.close()
+
         return jsonify({
             "message": "Invalid time slot"
         }), 400
 
-    max_capacity = slot[0]
+    max_capacity = slot["max_capacity"]
 
     cursor.execute("""
         SELECT COUNT(*)
@@ -125,7 +178,9 @@ def create_appointment():
     current_bookings = cursor.fetchone()[0]
 
     if current_bookings >= max_capacity:
+
         conn.close()
+
         return jsonify({
             "message": "Selected slot is full"
         }), 400
@@ -144,14 +199,14 @@ def create_appointment():
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        data["customer_name"],
-        data["customer_phone"],
+        data["customer_name"].strip(),
+        phone,
         data.get("customer_email"),
         data["service_type"],
         data["preferred_date"],
         data["preferred_time"],
         data.get("vehicle_make"),
-        data.get("vehicle_model"),
+        vehicle,
         data.get("notes")
     ))
 
@@ -161,7 +216,6 @@ def create_appointment():
     return jsonify({
         "message": "Appointment booked successfully"
     }), 201
-
 
 @main.route("/api/auth/login", methods=["POST"])
 def login():
@@ -299,25 +353,57 @@ def update_appointment_status(appointment_id):
     auth = admin_required()
     if auth:
         return auth
+
     data = request.json
 
     conn = sqlite3.connect(DATABASE_NAME)
     cursor = conn.cursor()
 
-    cursor.execute("""
-        UPDATE appointments
-        SET status = ?
-        WHERE id = ?
-    """, (
-        data["status"],
-        appointment_id
-    ))
+    # Status-only update (dropdown)
+    if len(data.keys()) == 1 and "status" in data:
+
+        cursor.execute("""
+            UPDATE appointments
+            SET status = ?
+            WHERE id = ?
+        """, (
+            data["status"],
+            appointment_id
+        ))
+
+    # Full appointment edit
+    else:
+
+        cursor.execute("""
+            UPDATE appointments
+            SET
+                customer_name = ?,
+                customer_phone = ?,
+                customer_email = ?,
+                service_type = ?,
+                preferred_date = ?,
+                preferred_time = ?,
+                vehicle_model = ?,
+                notes = ?,
+                status = ?
+            WHERE id = ?
+        """, (
+            data["customer_name"],
+            data["customer_phone"],
+            data.get("customer_email", ""),
+            data["service_type"],
+            data["preferred_date"],
+            data["preferred_time"],
+            data["vehicle_model"],
+            data.get("notes", ""),
+            data.get("status", "Pending"),
+            appointment_id
+        ))
 
     conn.commit()
 
     if cursor.rowcount == 0:
         conn.close()
-
         return jsonify({
             "message": "Appointment not found"
         }), 404
@@ -325,7 +411,7 @@ def update_appointment_status(appointment_id):
     conn.close()
 
     return jsonify({
-        "message": "Appointment status updated"
+        "message": "Appointment updated successfully"
     })
 @main.route("/api/admin/services", methods=["GET"])
 def get_all_services():
@@ -433,27 +519,38 @@ def delete_service(service_id):
     auth = admin_required()
     if auth:
         return auth
+
     conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
     cursor.execute("""
-        DELETE FROM services
+        SELECT is_active
+        FROM services
         WHERE id = ?
     """, (service_id,))
 
-    conn.commit()
+    service = cursor.fetchone()
 
-    if cursor.rowcount == 0:
+    if not service:
         conn.close()
-
         return jsonify({
             "message": "Service not found"
         }), 404
 
+    new_status = 0 if service["is_active"] else 1
+
+    cursor.execute("""
+        UPDATE services
+        SET is_active = ?
+        WHERE id = ?
+    """, (new_status, service_id))
+
+    conn.commit()
     conn.close()
 
     return jsonify({
-        "message": "Service deleted successfully"
+        "message": "Service updated successfully"
     })
 @main.route("/api/admin/gallery", methods=["GET"])
 def get_all_gallery_images():

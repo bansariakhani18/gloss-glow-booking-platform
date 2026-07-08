@@ -11,7 +11,17 @@ export default function Hero() {
 
             <div className="max-w-[1500px] mx-auto px-8">
 
-                <div className="grid lg:grid-cols-2 gap-24 items-center min-h-screen pt-28 pb-16">
+                <div className="
+grid
+lg:grid-cols-2
+gap-10
+lg:gap-24
+items-center
+min-h-screen
+pt-32
+lg:pt-28
+pb-16
+">
 
                     <HeroContent />
 

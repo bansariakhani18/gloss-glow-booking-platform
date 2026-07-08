@@ -12,7 +12,7 @@ export default function HeroImage() {
 
             transition={{ duration: 1 }}
 
-            className="flex justify-center"
+           className="flex justify-center mt-8 lg:mt-0"
 
         >
 
@@ -22,8 +22,15 @@ export default function HeroImage() {
 
                 alt="Hero Car"
 
-                className="w-[700px] h-[700px] object-cover rounded-3xl"
-
+                className="
+                    w-full
+max-w-[340px]
+sm:max-w-[450px]
+lg:max-w-[700px]
+aspect-square
+object-cover
+rounded-3xl
+"
             />
 
         </motion.div>

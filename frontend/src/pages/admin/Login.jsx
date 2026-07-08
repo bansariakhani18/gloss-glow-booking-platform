@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
@@ -27,37 +28,35 @@ export default function AdminLogin() {
 
     async function handleSubmit(e) {
 
-        e.preventDefault();
+    e.preventDefault();
 
-        setLoading(true);
+    setLoading(true);
 
-        try {
+    try {
 
-            const res = await api.post("/auth/login", formData);
+        await api.post("/auth/login", formData);
 
-console.log(res.data);
+        toast.success("Welcome back, Admin!");
 
-alert("Login successful");
+        navigate("/admin/dashboard");
 
-navigate("/admin/dashboard");
+    }
 
-        }
+    catch (err) {
 
-        catch (err) {
+        toast.error(
+            err.response?.data?.message || "Invalid username or password"
+        );
 
-            alert(
+    }
 
-                err.response?.data?.message ||
-
-                "Login failed"
-
-            );
-
-        }
+    finally {
 
         setLoading(false);
 
     }
+
+}
 
     return (
 
@@ -125,21 +124,28 @@ navigate("/admin/dashboard");
 
                     />
 
-                    <button
+                   <button
+    disabled={loading}
+    className={`w-full rounded-xl py-4 font-semibold transition ${
+        loading
+            ? "bg-red-500 cursor-not-allowed opacity-70"
+            : "bg-red-600 hover:bg-red-700"
+    }`}
+>
 
-                        disabled={loading}
+    {loading ? (
+        <div className="flex items-center justify-center gap-3">
 
-                        className="w-full bg-red-600 hover:bg-red-700 transition rounded-xl py-4 font-semibold"
+            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
 
-                    >
+            <span>Signing In...</span>
 
-                        {loading
+        </div>
+    ) : (
+        "Sign In"
+    )}
 
-                            ? "Signing In..."
-
-                            : "Sign In"}
-
-                    </button>
+</button>
 
                 </form>
 

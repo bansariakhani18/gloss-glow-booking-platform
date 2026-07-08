@@ -11,17 +11,17 @@ export default function HeroContent() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9 }}
 
-            className="max-w-2xl"
+           className="max-w-2xl text-center lg:text-left"
 
         >
 
-            <p className="uppercase tracking-[8px] text-red-600 text-sm font-semibold mb-6">
+            <p className="uppercase tracking-[5px] sm:tracking-[8px] text-red-600 text-xs sm:text-sm font-semibold mb-5 lg:mb-6">
 
                 SCIENCE CITY • AHMEDABAD
 
             </p>
 
-            <h1 className="text-6xl lg:text-7xl font-black leading-[0.9] text-white">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.9] text-white">
 
                 GLOSS
 
@@ -35,7 +35,7 @@ export default function HeroContent() {
 
             </h1>
 
-            <h2 className="mt-10 text-4xl lg:text-5xl font-bold leading-tight text-white">
+            <h2 className="mt-8 lg:mt-10 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white">
 
                 Making Your Car
 
@@ -53,7 +53,7 @@ export default function HeroContent() {
 
             </h2>
 
-            <p className="mt-8 text-zinc-400 text-lg leading-9 max-w-xl">
+            <p className="mt-6 lg:mt-8 text-base sm:text-lg leading-8 lg:leading-9 max-w-xl mx-auto lg:mx-0">
 
                 Premium ceramic coating, paint protection,
                 detailing and deep interior care delivered with
@@ -61,7 +61,7 @@ export default function HeroContent() {
 
             </p>
 
-            <div className="mt-14 flex flex-wrap gap-6">
+            <div className="mt-10 lg:mt-14 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center lg:justify-start">
 
                 <Link
 

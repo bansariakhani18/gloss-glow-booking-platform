@@ -16,9 +16,7 @@ def create_app():
     # Secret Key
     # -----------------------------
     app.config["SECRET_KEY"] = os.getenv(
-        "SECRET_KEY",
-        "gloss-glow-secret-key"
-    )
+        "SECRET_KEY")
 
     # -----------------------------
     # Session Configuration

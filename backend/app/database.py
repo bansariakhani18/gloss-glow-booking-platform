@@ -13,7 +13,9 @@ def init_db():
     conn = get_db()
     cursor = conn.cursor()
 
+    # -----------------------------
     # Admins
+    # -----------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,7 +24,9 @@ def init_db():
     )
     """)
 
+    # -----------------------------
     # Services
+    # -----------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS services (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,7 +39,9 @@ def init_db():
     )
     """)
 
+    # -----------------------------
     # Appointments
+    # -----------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS appointments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +59,9 @@ def init_db():
     )
     """)
 
+    # -----------------------------
     # Gallery Images
+    # -----------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS gallery_images (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,7 +71,9 @@ def init_db():
     )
     """)
 
+    # -----------------------------
     # Slot Settings
+    # -----------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS slot_settings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,6 +82,9 @@ def init_db():
     )
     """)
 
+    # -----------------------------
+    # Default Time Slots
+    # -----------------------------
     default_slots = [
         "09:00 AM",
         "10:00 AM",
@@ -89,6 +102,49 @@ def init_db():
         (slot_time, max_capacity)
         VALUES (?, ?)
         """, (slot, 5))
+
+    # -----------------------------
+    # Default Services
+    # -----------------------------
+    default_services = [
+        (
+            "Basic Wash",
+            "Exterior hand wash and dry with premium products",
+            499,
+            "45 min"
+        ),
+        (
+            "Premium Wash",
+            "Exterior and interior hand wash with premium products",
+            2999,
+            "2 hrs"
+        ),
+        (
+            "Interior Detailing",
+            "Complete interior vacuuming and deep cleaning",
+            999,
+            "90 min"
+        ),
+        (
+            "Ceramic Coating",
+            "Long-lasting ceramic paint protection",
+            4999,
+            "4 hrs"
+        ),
+        (
+            "Paint Protection Film",
+            "High-quality PPF installation",
+            14999,
+            "1 day"
+        )
+    ]
+
+    for service in default_services:
+        cursor.execute("""
+        INSERT OR IGNORE INTO services
+        (name, description, price, duration)
+        VALUES (?, ?, ?, ?)
+        """, service)
 
     conn.commit()
     conn.close()

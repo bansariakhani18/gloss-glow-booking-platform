@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_session import Session
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -22,9 +21,7 @@ def create_app():
     # -----------------------------
     # Session Configuration
     # -----------------------------
-    app.config["SESSION_TYPE"] = "filesystem"
-    app.config["SESSION_PERMANENT"] = False
-    app.config["SESSION_USE_SIGNER"] = True
+   
 
     app.config["SESSION_COOKIE_SAMESITE"] = "None"
     app.config["SESSION_COOKIE_HTTPONLY"] = True
@@ -55,7 +52,6 @@ def create_app():
     # -----------------------------
     # Extensions
     # -----------------------------
-    Session(app)
 
     # -----------------------------
     # Routes

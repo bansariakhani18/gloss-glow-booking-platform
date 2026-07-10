@@ -1,5 +1,5 @@
 import sqlite3
-
+from werkzeug.security import generate_password_hash
 DATABASE = "gloss_glow.db"
 
 
@@ -145,6 +145,27 @@ def init_db():
         (name, description, price, duration)
         VALUES (?, ?, ?, ?)
         """, service)
+
+       # -----------------------------
+# Default Admin
+# -----------------------------
+    cursor.execute("""
+    SELECT id
+    FROM admins
+    WHERE username = ?
+    """, ("admin",))
+
+    admin_exists = cursor.fetchone()
+
+    if not admin_exists:
+        cursor.execute("""
+        INSERT INTO admins
+        (username, password_hash)
+        VALUES (?, ?)
+        """, (
+            "admin",
+            generate_password_hash("admin@123")
+    ))
 
     conn.commit()
     conn.close()

@@ -12,7 +12,7 @@ The platform allows customers to browse detailing services, book appointments on
 
 ---
 
-# Screenshots
+## Screenshots
 
 ## Home Page
 
@@ -50,7 +50,9 @@ The platform allows customers to browse detailing services, book appointments on
 | Authentication | Session-based Authentication (Flask-Session + Werkzeug Password Hashing) |
 | Deployment | Netlify (Frontend), Render (Backend) |
 
-The project follows a client-server architecture using React for the frontend, Flask for the backend REST API, and SQLite for data persistence.---
+The project follows a client-server architecture using React for the frontend, Flask for the backend REST API, and SQLite for data persistence.
+
+---
 
 # Features
 
@@ -111,7 +113,7 @@ gloss-glow-booking-platform/
 │   │
 │   ├── run.py
 │   ├── requirements.txt
-│   └── .env
+│   └── .env.example
 │
 ├── frontend/
 │   ├── src/
@@ -284,7 +286,9 @@ Potential production enhancements:
 
 # Internship Context
 
-Developed as a **Summer Internship Project** for **Gloss & Glow Auto Detailing Studio**, Science City, Ahmedabad, as part of the M.Sc. Information Technology programme at **DAIICT**. The platform demonstrates how a traditional appointment-based business can streamline customer bookings and day-to-day management through a modern web application.---
+Developed as a **Summer Internship Project** for **Gloss & Glow Auto Detailing Studio**, Science City, Ahmedabad, as part of the M.Sc. Information Technology programme at **DAIICT**. The platform demonstrates how a traditional appointment-based business can streamline customer bookings and day-to-day management through a modern web application.
+
+---
 
 # License
 

@@ -33,7 +33,7 @@ The platform allows customers to browse detailing services, book appointments on
 
 ---
 
-## Appointment Management
+## Service Management
 
 
 <img width="948" height="497" alt="image" src="https://github.com/user-attachments/assets/442c73ec-c7c5-4a25-9958-8419db06af54" />
@@ -50,8 +50,7 @@ The platform allows customers to browse detailing services, book appointments on
 | Authentication | Session-based Authentication (Flask-Session + Werkzeug Password Hashing) |
 | Deployment | Netlify (Frontend), Render (Backend) |
 
-The project follows a client-server architecture where the React frontend communicates with a Flask REST API, which manages business logic and persists data in SQLite.
----
+The project follows a client-server architecture using React for the frontend, Flask for the backend REST API, and SQLite for data persistence.---
 
 # Features
 
@@ -285,9 +284,7 @@ Potential production enhancements:
 
 # Internship Context
 
-Developed as a **Summer Internship Project** for **Gloss & Glow Auto Detailing Studio**, Science City, Ahmedabad, during the MSc IT programme at DAIICT.
-
-The project was developed as a digital booking and management solution for a local car detailing studio, demonstrating how an appointment-based workflow can be streamlined through a web application.
+Developed as a **Summer Internship Project** for **Gloss & Glow Auto Detailing Studio**, Science City, Ahmedabad, as part of the M.Sc. Information Technology programme at **DAIICT**. The platform demonstrates how a traditional appointment-based business can streamline customer bookings and day-to-day management through a modern web application.
 ---
 
 # License

@@ -284,8 +284,7 @@ Potential production enhancements:
 
 # Internship Context
 
-Developed as a **Summer Internship Project** for **Gloss & Glow Auto Detailing Studio**, Science City, Ahmedabad, as part of the M.Sc. Information Technology programme at **DAIICT**. The platform demonstrates how a traditional appointment-based business can streamline customer bookings and day-to-day management through a modern web application.
----
+Developed as a **Summer Internship Project** for **Gloss & Glow Auto Detailing Studio**, Science City, Ahmedabad, as part of the M.Sc. Information Technology programme at **DAIICT**. The platform demonstrates how a traditional appointment-based business can streamline customer bookings and day-to-day management through a modern web application.---
 
 # License
 

@@ -2,6 +2,8 @@ import re
 from flask import Blueprint, request, jsonify, session
 from werkzeug.security import check_password_hash
 import sqlite3
+import os
+
 
 main = Blueprint("main", __name__)
 
@@ -13,7 +15,18 @@ def admin_required():
         }), 401  
 
     return None
+@main.route("/api/debug/database")
+def debug_database():
+    conn = sqlite3.connect(DATABASE_NAME)
+    cursor = conn.cursor()
 
+    cursor.execute("SELECT COUNT(*) FROM appointments")
+    count = cursor.fetchone()[0]
+
+    return jsonify({
+        "database_path": os.path.abspath(DATABASE_NAME),
+        "appointment_count": count
+    })
 
 @main.route("/api/services", methods=["GET"])
 def get_services():

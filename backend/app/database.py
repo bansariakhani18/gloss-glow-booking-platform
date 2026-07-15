@@ -1,13 +1,6 @@
 import sqlite3
 from werkzeug.security import generate_password_hash
-DATABASE = "gloss_glow.db"
-
-
-def get_db():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
-
+from app.turso_db import get_db
 
 def init_db():
     conn = get_db()
@@ -97,12 +90,16 @@ def init_db():
     ]
 
     for slot in default_slots:
-        cursor.execute("""
-        INSERT OR IGNORE INTO slot_settings
-        (slot_time, max_capacity)
-        VALUES (?, ?)
-        """, (slot, 5))
+        cursor.execute("SELECT COUNT(*) FROM slot_settings")
+        slot_count = cursor.fetchone()[0]
 
+    if slot_count == 0:
+        for slot in default_slots:
+            cursor.execute("""
+            INSERT INTO slot_settings
+            (slot_time, max_capacity)
+            VALUES (?, ?)
+            """, (slot, 5))
     # -----------------------------
     # Default Services
     # -----------------------------
@@ -140,11 +137,16 @@ def init_db():
     ]
 
     for service in default_services:
-        cursor.execute("""
-        INSERT OR IGNORE INTO services
-        (name, description, price, duration)
-        VALUES (?, ?, ?, ?)
-        """, service)
+        cursor.execute("SELECT COUNT(*) FROM services")
+        service_count = cursor.fetchone()[0]
+
+    if service_count == 0:
+        for service in default_services:
+            cursor.execute("""
+            INSERT INTO services
+            (name, description, price, duration)
+            VALUES (?, ?, ?, ?)
+            """, service)
 
        # -----------------------------
 # Default Admin

@@ -1,13 +1,12 @@
 import re
 from flask import Blueprint, request, jsonify, session
 from werkzeug.security import check_password_hash
-import sqlite3
+from app.turso_db import get_db
 import os
 
 
 main = Blueprint("main", __name__)
 
-DATABASE_NAME = "gloss_glow.db"
 def admin_required():
     if "admin_id" not in session:
         return jsonify({
@@ -17,21 +16,25 @@ def admin_required():
     return None
 @main.route("/api/debug/database")
 def debug_database():
-    conn = sqlite3.connect(DATABASE_NAME)
+
+    conn = get_db()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COUNT(*) FROM appointments")
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM appointments
+    """)
+
     count = cursor.fetchone()[0]
 
     return jsonify({
-        "database_path": os.path.abspath(DATABASE_NAME),
+        "database": "Turso",
         "appointment_count": count
     })
 
 @main.route("/api/services", methods=["GET"])
 def get_services():
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -49,8 +52,7 @@ def get_services():
 @main.route("/api/time-slots", methods=["GET"])
 def get_time_slots():
 
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -67,8 +69,7 @@ def get_time_slots():
     
 @main.route("/api/slots", methods=["GET"])
 def get_slots():
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -86,8 +87,7 @@ def get_slots():
 
 @main.route("/api/gallery", methods=["GET"])
 def get_gallery():
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -155,8 +155,7 @@ def create_appointment():
             "message": "Vehicle name is too long"
         }), 400
 
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     # Check slot capacity
@@ -234,8 +233,7 @@ def create_appointment():
 def login():
     data = request.json
 
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -285,7 +283,7 @@ def dashboard_stats():
     auth = admin_required()
     if auth:
         return auth
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("SELECT COUNT(*) FROM appointments")
@@ -344,8 +342,7 @@ def get_all_appointments():
     auth = admin_required()
     if auth:
         return auth
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -369,7 +366,7 @@ def update_appointment_status(appointment_id):
 
     data = request.json
 
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = get_db()
     cursor = conn.cursor()
 
     # Status-only update (dropdown)
@@ -431,8 +428,7 @@ def get_all_services():
     auth = admin_required()
     if auth:
         return auth
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -455,7 +451,7 @@ def create_service():
         return auth
     data = request.json
 
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -492,7 +488,7 @@ def update_service(service_id):
         return auth
     data = request.json
 
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -533,8 +529,7 @@ def delete_service(service_id):
     if auth:
         return auth
 
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -567,8 +562,7 @@ def delete_service(service_id):
     })
 @main.route("/api/admin/gallery", methods=["GET"])
 def get_all_gallery_images():
-    conn = sqlite3.connect(DATABASE_NAME)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -588,7 +582,7 @@ def get_all_gallery_images():
 def create_gallery_image():
     data = request.json
 
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -618,7 +612,7 @@ def create_gallery_image():
 def update_gallery_image(image_id):
     data = request.json
 
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -651,7 +645,7 @@ def update_gallery_image(image_id):
 
 @main.route("/api/admin/gallery/<int:image_id>", methods=["DELETE"])
 def delete_gallery_image(image_id):
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -679,7 +673,7 @@ def delete_appointment(id):
     if "admin_id" not in session:
         return jsonify({"message": "Authentication required"}), 401
 
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = get_db()
     cursor = conn.cursor()
 
     cursor.execute(

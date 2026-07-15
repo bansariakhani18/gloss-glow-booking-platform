@@ -4,13 +4,11 @@ from dotenv import load_dotenv
 import os
 
 from app.routes import main
-from app.database import init_db
 load_dotenv()
 
 
 def create_app():
     app = Flask(__name__)
-    init_db()
 
     # -----------------------------
     # Secret Key

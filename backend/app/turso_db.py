@@ -49,20 +49,7 @@ class TursoCursor:
         if params is None:
             params = []
 
-        print("\n========== TURSO DEBUG ==========")
-        print("DATABASE_URL :", DATABASE_URL)
-        print("QUERY        :", query)
-        print("PARAMS       :", params)
-        print("Executing...")
-        print("=================================\n")
-
         self._result = _client.execute(query, params)
-
-        print("\n========== TURSO DEBUG ==========")
-        print("Execution Finished Successfully")
-        print("Rows Returned :", len(self._result.rows))
-        print("=================================\n")
-
         return self
 
     def fetchone(self):

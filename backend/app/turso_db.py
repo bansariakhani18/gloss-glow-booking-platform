@@ -46,10 +46,18 @@ class TursoCursor:
         self._result = None
 
     def execute(self, query, params=None):
-        if params is None:
+     if params is None:
             params = []
 
+        print("=== ABOUT TO EXECUTE ===")
+        print("URL:", DATABASE_URL)
+        print("QUERY:", query)
+        print("PARAMS:", params)
+
         self._result = _client.execute(query, params)
+
+        print("=== EXECUTE FINISHED ===")
+
         return self
 
     def fetchone(self):

@@ -33,25 +33,25 @@ def debug_database():
     })
 
 @main.route("/api/services", methods=["GET"])
-    def get_services():
-        conn = get_db()
-        cursor = conn.cursor()
+def get_services():
+    conn = get_db()
+    cursor = conn.cursor()
 
-        cursor.execute("""
-            SELECT *
-            FROM services
-            WHERE is_active = 1
-        """)
+    cursor.execute("""
+        SELECT *
+        FROM services
+        WHERE is_active = 1
+    """)
 
-        rows = cursor.fetchall()
+    rows = cursor.fetchall()
 
-        print("TYPE:", type(rows[0]))
-        print("DIR:", dir(rows[0]))
-        print("REPR:", rows[0])
+    print("TYPE:", type(rows[0]))
+    print("DIR:", dir(rows[0]))
+    print("REPR:", rows[0])
 
-        conn.close()
+    conn.close()
 
-        return jsonify({"debug": "check render logs"})
+    return jsonify({"debug": "check render logs"})
 
 @main.route("/api/time-slots", methods=["GET"])
 def get_time_slots():

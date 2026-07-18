@@ -1,22 +1,33 @@
 import os
+import sys
 import libsql
 from dotenv import load_dotenv
 
 load_dotenv()
 
+conn = libsql.connect(
+    "/tmp/test.db",
+    sync_url=os.getenv("TURSO_DATABASE_URL"),
+    auth_token=os.getenv("TURSO_AUTH_TOKEN")
+)
+
 print("=" * 60)
-print("LIBSQL IMPORTED")
-print("VERSION:", getattr(libsql, "__version__", "unknown"))
-print("MODULE:", libsql)
-print("TOP LEVEL:")
-print([x for x in dir(libsql) if not x.startswith("_")])
+print("CONNECTION METHODS")
+print([x for x in dir(conn) if not x.startswith("_")])
+
 print("=" * 60)
 
-DATABASE_URL = os.getenv("TURSO_DATABASE_URL")
-DATABASE_TOKEN = os.getenv("TURSO_AUTH_TOKEN")
+try:
+    cur = conn.cursor()
 
-print("URL:", DATABASE_URL)
-print("TOKEN:", bool(DATABASE_TOKEN))
+    print("CURSOR METHODS")
+    print([x for x in dir(cur) if not x.startswith("_")])
 
-# Stop here intentionally.
-raise RuntimeError("LIBSQL API INSPECTION COMPLETE")
+except Exception as e:
+    print("CURSOR ERROR")
+    print(type(e).__name__)
+    print(e)
+
+print("=" * 60)
+
+sys.exit(0)

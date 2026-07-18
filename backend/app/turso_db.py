@@ -55,21 +55,21 @@ class TursoCursor:
         self._result = None
 
 
-    def execute(self, query, params=None):
-        if params is None:
-            params = []
+        def execute(self, query, params=None):
+            if params is None:
+                params = []
 
-    print("Executing:", query)
-    print("Before _client.execute()")
+            print("Executing:", query)
+            print("Before _client.execute()")
 
-    start = time.time()
+            start = time.time()
 
-    self._result = _client.execute(query, params)
+            self._result = _client.execute(query, params)
 
-    print("After _client.execute()")
-    print("Execute took", time.time() - start, "seconds")
+            print("After _client.execute()")
+            print("Execute took", time.time() - start, "seconds")
 
-    return self
+            return self
 
     def fetchone(self):
         if len(self._result.rows) == 0:

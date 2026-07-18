@@ -11,23 +11,6 @@ conn = libsql.connect(
     auth_token=os.getenv("TURSO_AUTH_TOKEN")
 )
 
-print("=" * 60)
-print("CONNECTION METHODS")
-print([x for x in dir(conn) if not x.startswith("_")])
-
-print("=" * 60)
-
-try:
-    cur = conn.cursor()
-
-    print("CURSOR METHODS")
-    print([x for x in dir(cur) if not x.startswith("_")])
-
-except Exception as e:
-    print("CURSOR ERROR")
-    print(type(e).__name__)
-    print(e)
-
-print("=" * 60)
+print("row_factory =", getattr(conn, "row_factory", None))
 
 sys.exit(0)

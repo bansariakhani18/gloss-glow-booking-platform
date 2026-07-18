@@ -43,15 +43,11 @@ def get_services():
         WHERE is_active = 1
     """)
 
-    rows = cursor.fetchall()
-
-    print("TYPE:", type(rows[0]))
-    print("DIR:", dir(rows[0]))
-    print("REPR:", rows[0])
+    services = [dict(row) for row in cursor.fetchall()]
 
     conn.close()
 
-    return jsonify({"debug": "check render logs"})
+    return jsonify(services)
 
 @main.route("/api/time-slots", methods=["GET"])
 def get_time_slots():

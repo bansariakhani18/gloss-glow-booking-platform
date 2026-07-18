@@ -8,17 +8,21 @@ load_dotenv()
 DATABASE_URL = os.getenv("TURSO_DATABASE_URL", "")
 DATABASE_TOKEN = os.getenv("TURSO_AUTH_TOKEN", "")
 
-# Force HTTPS because libsql:// websocket handshake is failing
 if DATABASE_URL.startswith("libsql://"):
     DATABASE_URL = DATABASE_URL.replace("libsql://", "https://", 1)
+
+print("=" * 60)
+print("DATABASE_URL =", DATABASE_URL)
+print("TOKEN EXISTS =", bool(DATABASE_TOKEN))
+print("Creating Turso client...")
+print("=" * 60)
 
 _client = create_client_sync(
     url=DATABASE_URL,
     auth_token=DATABASE_TOKEN
 )
 
-print("DATABASE_URL =", DATABASE_URL)
-print("TOKEN EXISTS =", bool(DATABASE_TOKEN))
+print("Turso client created successfully")
 
 
 class DBRow:
@@ -56,17 +60,38 @@ class TursoCursor:
         if params is None:
             params = []
 
-        print("Executing:", query)
-        print("Before _client.execute()")
+        print("=" * 60)
+        print("EXECUTE START")
+        print(query)
+        print("PARAMS:", params)
+        print("=" * 60)
 
         start = time.time()
 
-        self._result = _client.execute(query, params)
+        try:
+            self._result = _client.execute(query, params)
 
-        print("After _client.execute()")
-        print("Execute took", time.time() - start, "seconds")
+            elapsed = time.time() - start
 
-        return self
+            print("=" * 60)
+            print("EXECUTE FINISHED")
+            print("TIME:", elapsed)
+            print("ROWS:", len(self._result.rows))
+            print("=" * 60)
+
+            return self
+
+        except Exception as e:
+            elapsed = time.time() - start
+
+            print("=" * 60)
+            print("EXECUTE FAILED")
+            print(type(e).__name__)
+            print(e)
+            print("TIME:", elapsed)
+            print("=" * 60)
+
+            raise
 
     def fetchone(self):
         if len(self._result.rows) == 0:

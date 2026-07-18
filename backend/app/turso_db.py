@@ -1,10 +1,7 @@
 import time
-import os 
+import os
 from dotenv import load_dotenv
 from libsql_client import create_client_sync
-
-
-
 
 load_dotenv()
 
@@ -19,8 +16,10 @@ _client = create_client_sync(
     url=DATABASE_URL,
     auth_token=DATABASE_TOKEN
 )
+
 print("DATABASE_URL =", DATABASE_URL)
 print("TOKEN EXISTS =", bool(DATABASE_TOKEN))
+
 
 class DBRow:
     def __init__(self, row, columns):
@@ -30,7 +29,6 @@ class DBRow:
     def __getitem__(self, key):
         if isinstance(key, int):
             return self._row[key]
-
         return self._row[self._columns.index(key)]
 
     def keys(self):
@@ -54,22 +52,21 @@ class TursoCursor:
     def __init__(self):
         self._result = None
 
+    def execute(self, query, params=None):
+        if params is None:
+            params = []
 
-        def execute(self, query, params=None):
-            if params is None:
-                params = []
+        print("Executing:", query)
+        print("Before _client.execute()")
 
-            print("Executing:", query)
-            print("Before _client.execute()")
+        start = time.time()
 
-            start = time.time()
+        self._result = _client.execute(query, params)
 
-            self._result = _client.execute(query, params)
+        print("After _client.execute()")
+        print("Execute took", time.time() - start, "seconds")
 
-            print("After _client.execute()")
-            print("Execute took", time.time() - start, "seconds")
-
-            return self
+        return self
 
     def fetchone(self):
         if len(self._result.rows) == 0:

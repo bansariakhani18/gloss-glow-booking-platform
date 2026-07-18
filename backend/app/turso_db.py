@@ -1,6 +1,9 @@
-from libsql_client import create_client_sync
-import os from dotenv import load_dotenv
 import time
+import os 
+from dotenv import load_dotenv
+from libsql_client import create_client_sync
+
+
 
 
 load_dotenv()

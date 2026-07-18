@@ -15,6 +15,8 @@ _client = create_client_sync(
     url=DATABASE_URL,
     auth_token=DATABASE_TOKEN
 )
+print("DATABASE_URL =", DATABASE_URL)
+print("TOKEN EXISTS =", bool(DATABASE_TOKEN))
 
 class DBRow:
     def __init__(self, row, columns):
@@ -51,6 +53,7 @@ class TursoCursor:
     def execute(self, query, params=None):
         if params is None:
             params = []
+        print("Executing:", query)
 
         self._result = _client.execute(query, params)
         return self

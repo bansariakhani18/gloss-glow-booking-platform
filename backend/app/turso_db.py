@@ -1,22 +1,23 @@
 import os
-import sys
 import libsql
 from dotenv import load_dotenv
 
 load_dotenv()
 
-print("LIBSQL MODULE:", libsql)
-print("HAS Row:", hasattr(libsql, "Row"))
+DATABASE_URL = os.getenv("TURSO_DATABASE_URL")
+DATABASE_TOKEN = os.getenv("TURSO_AUTH_TOKEN")
 
-if hasattr(libsql, "Row"):
-    print("Row object:", libsql.Row)
+LOCAL_DB = "/tmp/gloss_glow_replica.db"
 
-conn = libsql.connect(
-    "/tmp/test.db",
-    sync_url=os.getenv("TURSO_DATABASE_URL"),
-    auth_token=os.getenv("TURSO_AUTH_TOKEN")
-)
 
-print("DEFAULT row_factory:", conn.row_factory)
+def get_db():
+    conn = libsql.connect(
+        LOCAL_DB,
+        sync_url=DATABASE_URL,
+        auth_token=DATABASE_TOKEN
+    )
 
-sys.exit(0)
+    # Pull latest data from Turso
+    conn.sync()
+
+    return conn

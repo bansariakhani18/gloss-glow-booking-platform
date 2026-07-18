@@ -1,6 +1,7 @@
 from libsql_client import create_client_sync
-import os
-from dotenv import load_dotenv
+import os from dotenv import load_dotenv
+import time
+
 
 load_dotenv()
 
@@ -50,13 +51,22 @@ class TursoCursor:
     def __init__(self):
         self._result = None
 
+
     def execute(self, query, params=None):
         if params is None:
             params = []
-        print("Executing:", query)
 
-        self._result = _client.execute(query, params)
-        return self
+    print("Executing:", query)
+    print("Before _client.execute()")
+
+    start = time.time()
+
+    self._result = _client.execute(query, params)
+
+    print("After _client.execute()")
+    print("Execute took", time.time() - start, "seconds")
+
+    return self
 
     def fetchone(self):
         if len(self._result.rows) == 0:

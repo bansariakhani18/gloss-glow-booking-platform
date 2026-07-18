@@ -4,14 +4,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("TURSO_DATABASE_URL")
-DATABASE_TOKEN = os.getenv("TURSO_AUTH_TOKEN")
+DATABASE_URL = os.getenv("TURSO_DATABASE_URL", "")
+DATABASE_TOKEN = os.getenv("TURSO_AUTH_TOKEN", "")
+
+# Force HTTPS because libsql:// websocket handshake is failing
+if DATABASE_URL.startswith("libsql://"):
+    DATABASE_URL = DATABASE_URL.replace("libsql://", "https://", 1)
 
 _client = create_client_sync(
     url=DATABASE_URL,
     auth_token=DATABASE_TOKEN
 )
-
 
 class DBRow:
     def __init__(self, row, columns):

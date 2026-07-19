@@ -1,15 +1,22 @@
 # Environment
 backend/.env
 frontend/.env
+.env
 
 # Python
 backend/venv/
-backend/__pycache__/
-backend/flask_session/
+.venv/
+__pycache__/
 *.pyc
 
+backend/flask_session/
+
 # Database
-backend/*.db
+*.db
+
+# Temporary
+tmp/
+*.log
 
 # Node
 frontend/node_modules/
